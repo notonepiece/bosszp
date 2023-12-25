@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Data</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/static/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/static/vendors/base/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <link rel="stylesheet" href="/static/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/static/images/favicon.png" />
+    <style>
+        .btn-group .btn-outline-secondary{
+            border-color: rgb(220, 220, 220);
+            line-height: 20px;
+        }
+
+    </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="navbar-brand-wrapper d-flex justify-content-center">
+        <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
+          <a class="navbar-brand brand-logo" href="{{ url_for('index') }}"><img src="/static/images/logo.svg" alt="logo"/></a>
+          <a class="navbar-brand brand-logo-mini" href="{{ url_for('index') }}"><img src="/static/images/logo-mini.svg" alt="logo"/></a>
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-sort-variant"></span>
+          </button>
+        </div>  
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav mr-lg-4 w-100">
+          <li class="nav-item nav-search d-none d-lg-block w-100">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+              </div>
+               <input type="text" class="form-control" placeholder="搜索岗位关键字" name="search" id="searchInput">
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                {% if 'account' in session %}
+                    <span class="nav-profile-name">{{ session['account'] }}</span>
+                {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" href="{{ url_for('user.logout') }}">
+                <i class="mdi mdi-logout text-primary"></i>
+                退出登录
+              </a>
+            </div>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index') }}">
+              <i class="mdi mdi-home menu-icon"></i>
+              <span class="menu-title">主 页</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('chart') }}" >
+              <i class="mdi mdi-circle-outline menu-icon"></i>
+              <span class="menu-title">分 析</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('data') }}">
+              <i class="mdi mdi-view-headline menu-icon"></i>
+              <span class="menu-title">数 据</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper" style="padding-top: 10px">
+          <div class="row">
+            <div class="col-md-12 stretch-card">
+              <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap">
+                        <p class="card-title" style="margin: 0">数据显示</p>
+                        <a class="btn btn-primary mt-2 mt-xl-0" style="color: #ffffff" href="{{ url_for('down') }}">导 出</a>
+                    </div>
+                  <div class="table-responsive" style="text-align: center">
+                    <table id="recent-purchases-listing" class="table">
+                      <thead>
+                        <tr>
+                            <th>工作岗位</th>
+                            <th>工作地址</th>
+                            <th>最低薪资</th>
+                            <th>最高薪资</th>
+                            <th>学历要求</th>
+                            <th>工作年限</th>
+                            <th>是否实习</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                      {% for _, job in jobs.iterrows() %}
+                          <tr>
+                            <td>{{job['岗位名称']}}</td>
+                            <td>{{job['工作地址']}}</td>
+                            <td>{{job['最低薪资']}}</td>
+                            <td>{{job['最高薪资']}}</td>
+                            <td>{{job['学历要求']}}</td>
+                            <td>{{job['工作经验']}}</td>
+                            {% if job['实习生']  %}
+                                <td>是</td>
+                            {% else %}
+                                <td>否</td>
+                            {% endif %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                            {% if current_page > 1 %}
+                                <!-- 上一页按钮 -->
+                                <a href="{{ url_for('data', page=current_page-1) }}" type="button" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-chevron-left"></i>
+                                </a>
+                            {% endif %}
+
+                            <!-- 页码按钮（中间部分） -->
+                            {% if total_pages <= 5 %}
+                                <!-- 如果总页数不超过5，显示所有页码 -->
+                                {% for num in range(1, total_pages + 1) %}
+                                    <a href="{{ url_for('data', page=num) }}" type="button" class="btn btn-outline-secondary{% if num == current_page %} active{% endif %}">
+                                        {{ num }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <!-- 如果总页数超过7，显示省略号 -->
+                                {% set start_page = current_page - 3 %}
+                                {% set end_page = current_page + 3 %}
+                                {% if start_page < 1 %}
+                                    {% set end_page = end_page + (1 - start_page) %}
+                                    {% set start_page = 1 %}
+                                {% endif %}
+                                {% if end_page > total_pages %}
+                                    {% set start_page = start_page - (end_page - total_pages) %}
+                                    {% set end_page = total_pages %}
+                                {% endif %}
+
+                                 {% if start_page > 7 %}
+                                    <!-- 显示第一页按钮 -->
+                                    <a href="{{ url_for('data', page=1) }}" type="button" class="btn btn-outline-secondary">1</a>
+                                     <!-- 显示省略号 -->
+                                     <a type="button" class="btn btn-outline-secondary">···</a>
+                                {% endif %}
+
+                                {% for num in range(start_page, end_page + 1) %}
+                                    <a href="{{ url_for('data', page=num) }}" type="button" class="btn btn-outline-secondary{% if num == current_page %} active{% endif %}">
+                                        {{ num }}
+                                    </a>
+                                {% endfor %}
+
+                                {% if end_page < total_pages %}
+                                    <!-- 显示省略号 -->
+                                     <a type="button" class="btn btn-outline-secondary">···</a>
+                                    <!-- 显示最后一页按钮 -->
+                                    <a href="{{ url_for('data', page=total_pages) }}" type="button" class="btn btn-outline-secondary">
+                                        {{ total_pages }}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if current_page < total_pages %}
+                                <!-- 下一页按钮 -->
+                                <a href="{{ url_for('data', page=current_page + 1) }}" type="button" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-chevron-right"></i>
+                                </a>
+                            {% endif %}
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script>
+     document.getElementById("searchInput").addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+              let value = document.getElementById("searchInput").value;
+              if (value.trim() !== ""){
+                  window.location.href = '/index/' + encodeURIComponent(value) + '/1';
+              }
+          }
+        });
+  </script>
+  <script src="/static/vendors/base/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <script src="/static/vendors/chart.js/Chart.min.js"></script>
+  <script src="/static/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/static/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="/static/js/off-canvas.js"></script>
+  <script src="/static/js/hoverable-collapse.js"></script>
+  <script src="/static/js/template.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/static/js/dashboard.js"></script>
+  <script src="/static/js/data-table.js"></script>
+  <script src="/static/js/jquery.dataTables.js"></script>
+  <script src="/static/js/dataTables.bootstrap4.js"></script>
+  <!-- End custom js for this page-->
+</body>
+
+</html>
+

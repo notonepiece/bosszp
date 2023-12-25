@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Chart</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/static/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/static/vendors/base/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/static/images/favicon.png" />
+</head>
+
+<body>
+  <div class="container-scroller">
+    
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="navbar-brand-wrapper d-flex justify-content-center">
+        <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
+          <a class="navbar-brand brand-logo" href="{{ url_for('index') }}"><img src="/static/images/logo.svg" alt="logo"/></a>
+          <a class="navbar-brand brand-logo-mini" href="{{ url_for('index') }}"><img src="/static/images/logo-mini.svg" alt="logo"/></a>
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-sort-variant"></span>
+          </button>
+        </div>  
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav mr-lg-4 w-100">
+          <li class="nav-item nav-search d-none d-lg-block w-100">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+              </div>
+               <input type="text" class="form-control" placeholder="搜索岗位关键字" name="search" id="searchInput">
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+               {% if 'account' in session %}
+                    <span class="nav-profile-name">{{ session['account'] }}</span>
+                {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" href="{{ url_for('user.logout') }}">
+                <i class="mdi mdi-logout text-primary"></i>
+                退出登录
+              </a>
+            </div>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index') }}">
+              <i class="mdi mdi-home menu-icon"></i>
+              <span class="menu-title">主 页</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('chart') }}">
+              <i class="mdi mdi-circle-outline menu-icon"></i>
+              <span class="menu-title">分 析</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('data') }}">
+              <i class="mdi mdi-view-headline menu-icon"></i>
+              <span class="menu-title">数 据</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper" style="padding-top: 10px">
+          <div class="row">
+              {% for item in data %}
+            <div class="col-lg-6 grid-margin grid-margin-lg-0 stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ item.title }}</h4>
+                  <img src="{{ item.plt }}"  style="width: 100%" alt="#"/>
+                    {% if item.content  %}
+                    <p class="card-description"><span class="card-title">分析: </span>{{ item.content }} </p>
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+              {% endfor %}
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script>
+     document.getElementById("searchInput").addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+              let value = document.getElementById("searchInput").value;
+              if (value.trim() !== ""){
+                  window.location.href = '/index/' + encodeURIComponent(value) + '/1';
+              }
+          }
+        });
+  </script>
+  <script src="/static/vendors/base/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="/static/vendors/chart.js/Chart.min.js"></script>
+    <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="/static/js/off-canvas.js"></script>
+  <script src="/static/js/hoverable-collapse.js"></script>
+  <script src="/static/js/template.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/static/js/chart.js"></script>
+  <!-- End custom js for this page-->
+</body>
+
+</html>
